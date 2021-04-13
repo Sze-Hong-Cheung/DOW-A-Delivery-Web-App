@@ -100,6 +100,7 @@ app.get("/store/:store_id", (req, res) => {
   async function getCommodityListPage() {
     commodityListData.commodityList  = await storeModel.getCommodityList(searchWord, storeId);
     commodityListData.storeInfo = await storeModel.getStoreById(storeId);
+    console.log(commodityListData);
     res.render("commodity_list", {
       commodityListData: commodityListData,
       searchWord: searchWord
@@ -108,6 +109,21 @@ app.get("/store/:store_id", (req, res) => {
 
   getCommodityListPage();
   
+});
+
+app.post("/payment", (req, res) => {
+  const totalItems = JSON.parse(req.body.totalItems);
+  const totalFee = req.body.totalFee;
+
+  storeModel.getCommoditiesById(totalItems)
+  .then((data) => {
+    data.forEach(el => {el.amount=totalItems[String(el.comm_no)]});
+    console.log(data);
+    res.render("payment", {
+      items: data,
+      totalFee: totalFee
+    });
+  })
 });
 
 app.listen(3000, () => {

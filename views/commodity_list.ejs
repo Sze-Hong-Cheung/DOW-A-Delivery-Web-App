@@ -20,7 +20,7 @@
     
     <body>
         <nav class="navbar navbar-light bg-light fixed-top blue-nav">
-            <a href="/list" class="go-back-arror">
+            <a href="/" class="go-back-arror" onclick="window.history.go(-1);return false">
                 <i class="fa fa-chevron-left list-rating-star" style="color: rgb(255, 255, 255);margin-left:15px">
                 </i>
             </a>
@@ -29,7 +29,7 @@
                 aria-label="Search">
             </form>
         </nav>
-        <div class="container">
+        <div class="container" style="padding-bottom: 70px;">
             <div class="store-info-container">
                 <div class="detail-image" style="background-image: url(https://seeklogo.com/images/O/organic-restaurant-logo-D34AC3E788-seeklogo.com.png); "></div>
                 <p class="detail-store-name"><%= (commodityListData.storeInfo)[0].store_name%></p>
@@ -48,25 +48,30 @@
               </ul>
               <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-                    <% for (let i = 0; i < commodityListData.commodityList.length; i++) {%>
+                    <% for (let i = 0; i < commodityListData.commodityList.length; i++) {
+                        const commodity = commodityListData.commodityList[i];
+                        const discountPrice = commodity.comm_price * (100 - commodity.comm_discount)/100%>
                     <li class=" store-list-item">
                             <div class="list-image" style="background-image: url(https://seeklogo.com/images/O/organic-restaurant-logo-D34AC3E788-seeklogo.com.png); ">
                             </div>
                             <div class="list-text">
                                 <p class="list-store-name">
-                                    <%= commodityListData.commodityList[i].comm_name %>
+                                    <%= commodity.comm_name %>
                                 </p>
                                 <p class="list-commodity-sold">
                                     142 sold/month
                                 </p>
                                 <span class="badge bg-primary list-commodity-discount">
-                                    <%= commodityListData.commodityList[i].comm_discount %>%off
+                                    <%= commodity.comm_discount %>%off
                                 </span>
                                 <p class="list-commodity-price">
-                                    $<%= commodityListData.commodityList[i].comm_price * (100 - commodityListData.commodityList[i].comm_discount)/100 %><s class="list-commodity-old-price">$<%= commodityListData.commodityList[i].comm_price %></s>
+                                    $<%= discountPrice %><s class="list-commodity-old-price">$<%= commodity.comm_price %></s>
                                 </p>
-                                <i class="fa fa-plus-circle list-commodity-add">
-                                </i>
+                                <button class="fa fa-minus-circle list-commodity-minus hidden" value="<%= discountPrice %>" name="<%= commodity.comm_no %>" onclick="removeItem(this)">
+                                </button>
+                                <span class="list-commodity-amount hidden">1</span>
+                                <button class="fa fa-plus-circle list-commodity-add" value="<%= discountPrice %>" name="<%= commodity.comm_no %>" onclick="addItem(this)">
+                                </button>
                             </div>
                         </li>
                     <% } %>
@@ -74,6 +79,63 @@
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...</div>
               </div>
         </div>
+        <footer class="navbar navbar-light bg-light fixed-bottom">
+            <p class="list-commodity-total-fee">$0<br><span>Delivery Fee $5</span></p>
+            <form action="/payment" method="post" class="form-inline search-form" style="margin-bottom: 0;">
+                <input hidden id="totalFee" name="totalFee">
+                <input hidden id="totalItems" name="totalItems">
+                <button type="submit" class="form-control list-commodity-comfirm" type="search">Comfirm</button>
+            </form>
+        </footer>
+        <script>
+            let shoppingCart = {};
+            let totalFee = 0;
+            const totalFeeElement = document.getElementsByClassName("list-commodity-total-fee")[0];
+            const totalFeeInput = document.getElementById("totalFee");
+            const totalItems = document.getElementById("totalItems");
+            function addItem(target) {
+                const commoNo = target.name;
+                if (shoppingCart[commoNo]) {
+                    shoppingCart[commoNo]++;
+                } else {
+                    target.previousSibling.previousSibling.classList.toggle("hidden");
+                    target.previousSibling.previousSibling.previousSibling.previousSibling.classList.toggle("hidden");
+                    shoppingCart[commoNo] = 1;
+                }
+                totalFee += Number(target.value);
+                totalFee = Math.round(totalFee*100)/100;
+                totalFeeInput.value = totalFee;
+                totalFeeElement.innerHTML = '$' + totalFee + '<br><span>Delivery Fee $5</span>';
+                target.previousSibling.previousSibling.innerHTML = shoppingCart[commoNo];
+                totalItems.value = JSON.stringify(shoppingCart);
+
+                console.log(target.previousSibling.previousSibling)
+                console.log(shoppingCart);
+                console.log(totalFeeInput);
+            }
+            function removeItem(target) {
+                const commoNo = target.name;
+                if (shoppingCart[commoNo]) {
+                    shoppingCart[commoNo]--;
+                    if (shoppingCart[commoNo] == 0) {
+                        delete shoppingCart[commoNo];
+                        target.nextSibling.nextSibling.classList.toggle("hidden");
+                        target.classList.toggle("hidden"); 
+                    }
+                }
+                totalFee -= Number(target.value);
+                totalFee = Math.round(totalFee*100)/100;
+                totalFeeInput.value = totalFee;
+                totalFeeElement.innerHTML = '$' + totalFee + '<br><span>Delivery Fee $5</span>';
+                target.nextSibling.nextSibling.innerHTML = shoppingCart[commoNo];
+                totalItems.value = JSON.stringify(shoppingCart);
+
+                console.log(target.nextSibling.nextSibling)
+                console.log(shoppingCart);
+                console.log(totalFeeInput);
+
+            }
+        </script>
     </body>
     <style>
 ul,li {
@@ -253,6 +315,58 @@ a.go-back-arror {
     bottom: 5px;
     font-size: 24px;
     color: #0390ff;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+}
+.list-commodity-minus {
+    position: absolute;
+    right: 80px;
+    bottom: 5px;
+    font-size: 24px;
+    color: #0390ff;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+}
+.list-commodity-amount {
+    position: absolute;
+    right: 45px;
+    bottom: 4px;
+    font-size: 17px;
+    color: #333;
+    text-align: center;
+}
+.list-commodity-comfirm {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    color: #fff;
+    background-color: #0390ff;
+    border-color: transparent;
+}
+.list-commodity-total-fee {
+    margin-bottom: 0;
+    margin-left: 15px;
+
+}
+.list-commodity-total-fee {
+    font-size: 18px;
+    font-weight: bold;
+}
+.list-commodity-total-fee span {
+    font-size: 13px;
+    font-weight: normal;
+}
+.hidden {
+    visibility: hidden;
 }
     </style>
 

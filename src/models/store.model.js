@@ -36,5 +36,20 @@ module.exports = {
                 })
         })
     },
+    getCommoditiesById : function (ids) {
+        return new Promise(function (resolve, reject) {
+            let sql = "select comm_no, comm_name, comm_price, comm_discount from commodity where 1=2 ";
+            for(let key in ids){
+                sql += ' or comm_no=' + key;
+            }
+            connection.query(
+                sql,
+                function (error, results) {
+                    if (error) throw error;
+                    console.log(results);
+                    resolve(results);
+                })
+        })
+    },
     storeTypeList: ["Pizza", "Salad", "Drinks", "Snacks", "Breakfast", "Chinese", "Mexican", "Indian"]
 };
