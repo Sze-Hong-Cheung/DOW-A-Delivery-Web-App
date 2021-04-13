@@ -12,7 +12,7 @@ const flash = require("connect-flash");
 const { render } = require("ejs");
 const connection = require("./config/db.config.js");
 const customerModel = require("./src/models/customer.model");
-const { customerLogin } = require("./src/models/customer.model");
+const storeModel = require("./src/models/store.model");
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(
   })
 );
 app.use(cookieParser());
-app.use(express.static("public"));
+app.use(express.static('public'));
 app.use(
     session({
       secret: "session secret ",
@@ -41,23 +41,74 @@ let salt = "7fa73b47df808d36c5fe328546ddef8b9011b2c6";
 
 console.log("App started.");
 
+storeModel.getStoreList('' ,'', 'Brooklyn');
 //router
 app.get("/", (req, res) => {
+    res.redirect("/login");
+});
+
+app.get("/login", (req, res) => {
     res.render("customer_login");
+});
+
+app.post("/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    //login function
+    customerModel.customerLogin(email, password)
+    .then(() => {console.log("Success login.")})
+    .catch(msg => {console.log(msg)});
 });
 
 app.get("/signup", (req, res) => {
     res.render("customer_signup");
 });
 
-app.get("/list", (req, res) => {
-    res.render("restaurant_list");
+app.post("/signup", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    const lastName = req.body.lastName;
+    
+    //signup function
+    customerModel.customerSignup(email, password, lastName)
+    .then(() => console.log("Sign Up success."))
+    .catch( reason => console.log(reason));
 });
 
-//login function
-customerModel.customerLogin("abc@gmail.com", "123")
-    .then(() => {console.log("Success login.")})
-    .catch(msg => {console.log(msg)});
+app.get("/list", (req, res) => {
+    const searchWord = req.query.search;
+    const storeType = req.query.type;
+    const city = req.query.city;
+    storeModel.getStoreList(searchWord, storeType, city)
+    .then((data) => {res.render("restaurant_list", {
+      storeList: data,
+      storeTypeList: storeModel.storeTypeList,
+      city: (city == undefined ? '' : city),
+      searchWord: searchWord
+    });
+    console.log(data);});
+});
+
+app.get("/store/:store_id", (req, res) => {
+  const searchWord = req.query.search;
+  const Storetype = req.query.type;
+  const city = req.query.city;
+  const storeId = req.params.store_id;
+  let commodityListData = {};
+
+  async function getCommodityListPage() {
+    commodityListData.commodityList  = await storeModel.getCommodityList(searchWord, storeId);
+    commodityListData.storeInfo = await storeModel.getStoreById(storeId);
+    res.render("commodity_list", {
+      commodityListData: commodityListData,
+      searchWord: searchWord
+    });
+  }
+
+  getCommodityListPage();
+  
+});
 
 app.listen(3000, () => {
     console.log("Server started on port 3000");

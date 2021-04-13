@@ -1,5 +1,8 @@
 const e = require("express");
 const connection = require("./../../config/db.config.js");
+const crypto = require("crypto");
+
+const salt = "7fa73b47df808d36c5fe328546ddef8b9011b2c6";
 
 module.exports = {
     customerLogin : function (email, password) {
@@ -13,13 +16,36 @@ module.exports = {
                     if (!customer) {
                         console.log("Email doesn't exist.");
                         reject("Email doesn't exist.");
-                    } else if (customer.password != password) {
-                        console.log("Wrong password.");
-                        reject("Wrong password.");
-                    } else if (customer.password == password){
-                        console.log("Correct emial and password.");
-                        resolve();
+                    } else {
+                        const passwordEncryted = crypto
+                        .createHash("sha1")
+                        .update(salt + password)
+                        .digest("hex");
+                        if (customer.password == passwordEncryted) {
+                            console.log("Correct emial and password.");
+                            resolve();
+                        } else {
+                            console.log("Wrong password.");
+                            reject("Wrong password.");
+                        }
                     }
+                })
+            }
+        )
+    },
+    customerSignup : function (email, password, lastName) {
+        const passwordEncryted = crypto
+                                .createHash("sha1")
+                                .update(salt + password)
+                                .digest("hex");
+        return new Promise(function (resolve, reject) {
+            connection.query(
+                "insert into customer (cust_id, email, password, cust_name, tbl_last_date) values (?,?,?,?,now())",
+                [4, email, passwordEncryted, lastName],
+                function (error, results) {
+                    if (error) throw error;
+                    console.log("ss");
+                    resolve();
                 })
             }
         )
