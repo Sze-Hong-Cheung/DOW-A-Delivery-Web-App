@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>
-            DOW - Commodity List
+            DOW - Order Success
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="stylesheet" href="/css/home.css">
@@ -20,58 +20,13 @@
     
     <body>
         <nav class="navbar navbar-light bg-light fixed-top blue-nav" style="height: 54px;">
-            <p style="text-align: center; width: 100%; margin: 0; font-size: 20px; font-weight: bold;">Payment</p>
-            <a href="/" class="go-back-arror" onclick="window.history.go(-1);return false">
-                <i class="fa fa-chevron-left list-rating-star" style="color: rgb(255, 255, 255);margin-left:15px">
-                </i>
-            </a>
+            <p style="text-align: center; width: 100%; margin: 0; font-size: 20px; font-weight: bold;">Order Placed</p>
         </nav>
         <div class="container" style="padding-bottom: 70px;">
-            <div class="payment-info-container">
-                <p class="detail-store-name"><%=`${customerInfo.street}, ${customerInfo.city}, ${customerInfo.state}`%></p>
-                <P><%= customerInfo.cust_name%> <%= customerInfo.phone%></P>
-                <%const hour = new Date().getHours(), minute = new Date().getMinutes() %>
-                <p style="position: relative; margin-bottom: 8px;">Approx arrive at<span class="payment-commodity-price"><%= (hour == 23 ? 0 : hour) + ':' + minute%></span></p>
-                <p style="position: relative; margin-bottom: 1px;">Payment method<span class="payment-commodity-price">Credit Card **<%=customerInfo.card_no.toString().substring(-2,2)%></span></p>
-            </div>
-            <div class="payment-info-container">
-                <ul style="padding-left:0">
-                <% for (let i = 0; i < items.length; i++) { 
-                    const discountPrice = items[i].comm_price * (100 - items[i].comm_discount)/100 %>
-                <li class="payment-commodity-item">
-                        <div class="payment-commodity-image" style="background-image: url(https://seeklogo.com/images/O/organic-restaurant-logo-D34AC3E788-seeklogo.com.png); ">
-                        </div>
-                        <div class="payment-list-text">
-                            <p class="payment-commodity-name">
-                                <%= items[i].comm_name %>
-                            </p>
-                            <p class="payment-commodity-amount">
-                                x<%= items[i].amount %>
-                            </p>
-                            <p class="payment-commodity-price">
-                                $<%= Math.round(discountPrice * items[i].amount * 100) / 100%>
-                            </p>
-                        </div>
-                    </li>
-                <% } %>
-            </ul>
-                <p style="position: relative;">Total Price<span class="payment-commodity-price">$<%= totalFee %></span></p>
-                <p style="position: relative;">Delivery Fee<span class="payment-commodity-price">$5</span></p>
-                <!-- <p style="position: relative;">Coupon<span class="payment-commodity-price">-$10</span></p>-->
-                <p style="position: relative;">Final Price<span class="payment-commodity-price">$<%= Number(totalFee) + 5 %></span></p>
-            </div>
+            
+            <a href="/list">Go back to list</a>
         </div>
-        <footer class="navbar navbar-light bg-light fixed-bottom" style="height: 54px;">
-            <p class="list-commodity-total-fee">Make Payment:  $<%= Number(totalFee) + 5 %>  </p>
-            <form action="/order-process" method="post" class="form-inline search-form" style="margin-bottom: 0;">
-                <input hidden name="storeId" value=<%=storeId%>>
-                <input hidden name="addressId" value=<%=customerInfo.address_id%>>
-                <input hidden name="totalItems" value=<%=JSON.stringify(items)%>>
-                <input hidden name="finalFee" value=<%=Number(totalFee) + 5 %>>
-                <input hidden name="cardNo" value=<%=customerInfo.card_no %>>
-                <button type="submit" class="form-control list-commodity-comfirm" type="search">Pay</button>
-            </form>
-        </footer>
+        
         <script>
   
         </script>

@@ -33,22 +33,35 @@ module.exports = {
             }
         )
     },
-    customerSignup : function (email, password, lastName) {
+    customerSignup : function (email, password, lastName, phone) {
         const passwordEncryted = crypto
                                 .createHash("sha1")
                                 .update(salt + password)
                                 .digest("hex");
         return new Promise(function (resolve, reject) {
             connection.query(
-                "insert into customer (cust_id, email, password, cust_name, tbl_last_date) values (?,?,?,?,now())",
-                [4, email, passwordEncryted, lastName],
+                "insert into customer (email, password, cust_name, phone) values (?,?,?,?)",
+                [email, passwordEncryted, lastName, phone],
                 function (error, results) {
                     if (error) throw error;
-                    console.log("ss");
-                    resolve();
+                    console.log("Signing up.");
+                    resolve(results.insertId);
                 })
             }
         )
+    },
+    getCustomerInfoAtPayment : function (cust_id) {
+        return new Promise(function (resolve, reject) {
+            connection.query(
+                "select a.cust_id, a.cust_name, a.phone, b.street, b.city, b.state, b.address_id, c.card_no from customer a join customer_address b on a.cust_id = b.cust_id join credit_card c on a.cust_id = c.cust_id where a.cust_id = ? and c.chosen_status=1;",
+                [cust_id],
+                function (error, results) {
+                    if (error) throw error;
+                    if (results.length == 0) reject("Can't find customer info at payment page.");
+                    resolve(results[0]);
+                })
+            }
+        ) 
     },
     getCustomer : function () {
         return new Promise(function (resolve, reject) {
