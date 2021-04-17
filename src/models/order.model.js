@@ -1,4 +1,4 @@
-const e = require("express");
+const express = require("express");
 const connection = require("../../config/db.config.js");
 
 module.exports = {
@@ -69,12 +69,19 @@ module.exports = {
                         });
                     });
                     });
-                    
-
-                    
                 })
             })
         }/*);
     }*/,
+    updateOrderStatus : function (orderNo) {
+        return new Promise(function (resolve, reject) {
+            connection.query("update `order` set order_status = order_status + 1 where order_no = ?",
+            [orderNo], 
+            function (error, results) {
+                if (error) throw errorl
+                resolve();
+            });
+        });
+    },
     orderStatusList: ["Order Placed", "Delivering", "Completed"]
 };

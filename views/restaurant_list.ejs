@@ -115,9 +115,9 @@
                 </a>
                 <% } %>
                 <footer class="navbar navbar-light bg-light fixed-bottom" style="height: 56px; background-color: #0390ff!important; ">
-                    <a href="/list">list</a>
-                    <a href="/history">history</a>
-                    <a href="/me">me</a>
+                    <a href="/list" class="footer-tab fa fa-home">    Home</a>
+                    <a href="/history" class="footer-tab fa fa-list">   Orders</a>
+                    <a href="/me" class="footer-tab  fa fa-user">   Me</a>
                 </footer>
             </div>
         </div>
@@ -295,6 +295,15 @@
 
             .list-container {
               padding-top: 171px;
+            }
+            .footer-tab {
+              width: 33%;
+              text-align: center;
+              color: #fff;
+              font-size: 17px
+            }
+            .footer-tab:hover {
+              color: #ddd;
             }
     </style> 
  </body>

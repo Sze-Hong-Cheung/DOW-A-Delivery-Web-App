@@ -1,4 +1,4 @@
-const e = require("express");
+const express = require("express");
 const connection = require("../../config/db.config.js");
 
 module.exports = {
@@ -23,7 +23,8 @@ module.exports = {
                 function (error, result) {
                     if (error) throw error;
                     resolve(result);
-                })
+                }
+            )
         })
     },
     getCommodityList : function (searchWord='', storeId='') {
@@ -34,7 +35,8 @@ module.exports = {
                 function (error, results) {
                     if (error) throw error;
                     resolve(results);
-                })
+                }
+            )
         })
     },
     getCommoditiesById : function (ids) {
@@ -43,13 +45,13 @@ module.exports = {
             for(let key in ids){
                 sql += ' or comm_no=' + key;
             }
-            connection.query(
-                sql,
+            connection.query(sql,
                 function (error, results) {
                     if (error) throw error;
                     console.log(results);
                     resolve(results);
-                })
+                }
+            )
         })
     },
     storeTypeList: ["Pizza", "Salad", "Drinks", "Snacks", "Breakfast", "Chinese", "Mexican", "Indian"]

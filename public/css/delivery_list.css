@@ -1,0 +1,110 @@
+body,html {
+	max-width:700px;
+	margin:0 auto!important;
+	position:relative;
+	padding:0;
+	overflow-x:hidden;
+}
+.store-list-item {
+	background-color:#fff;
+	margin:10px 0;
+	padding:10px;
+}
+.list-commodity-name {
+	margin-bottom:1px;
+	font-size:18px;
+	font-weight:bold;
+    color: #555;
+}
+.list-order-by {
+	color:#777;
+}
+.list-order-by
+        button {
+	float:right;
+	color:#777;
+	background-color:transparent;
+	border-color:transparent;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+	-webkit-tap-highlight-color:transparent;
+}
+.list-order-by button:focus {
+	color:#777;
+	background-color:transparent;
+	border-color:transparent;
+	box-shadow:none;
+}
+.list-order-by
+        button:hover {
+	color:#777;
+	background-color:transparent;
+	border-color:transparent;
+	box-shadow:none;
+}
+.dropdown-container {
+	height:40px;
+}
+.list-container {
+	overflow:auto;
+}
+.blue-nav {
+	background-color:#0390ff!important;
+	color:#fff;
+}
+.container {
+    padding-top: 56px;
+}
+.nav-link.list-commodity-tab {
+    background-color: transparent;
+    color: #666;
+    border-radius: 0;
+}
+.nav-link.list-commodity-tab.active {
+    background-color: transparent;
+    color: #666;
+    border-bottom: 2px solid #0390ff;
+}
+.nav-link.list-commodity-tab.active::after {
+    width: 10px;
+    height: 10px;
+    background-color: #0390ff;
+}
+.nav-pills.list-commodity-tab {
+    margin-bottom: 10px!important;
+    margin-top: 10px!important;
+}
+.list-commodity-comfirm {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    width: 100px;
+    height: 40px;
+    border-radius: 20px;
+    color: #fff;
+    background-color: #0390ff;
+    border-color: transparent;
+}
+
+.list-commodity-total-fee span {
+    font-size: 13px;
+    font-weight: normal;
+}
+.hidden {
+    visibility: hidden;
+}
+.list-delivery-left {
+    float: left;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.list-delivery-right {
+    margin-left: 130px;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.list-delivery-row {
+    overflow: hidden;
+}
